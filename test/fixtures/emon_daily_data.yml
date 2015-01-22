@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  circuit_id: 1
+  year: 1
+  as_of_day: 1
+  value: 1.5
+
+two:
+  circuit_id: 1
+  year: 1
+  as_of_day: 1
+  value: 1.5
