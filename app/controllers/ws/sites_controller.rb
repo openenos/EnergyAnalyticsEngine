@@ -21,13 +21,14 @@ class Ws::SitesController < ApplicationController
     #Circuit.where(panel_id: site.id, input: 1, active: 1).each do|circuit|
 
       #results = db.execute("select * from emon_live_data where panel='#{site.site_ref}' and channel='totalPower' ALLOW FILTERING")
-	  results = redis.hmget("panel-#{site_ref}-totalPower", "avg_power", "max_power", "total_power")
-    values = {avg_power: results[0]/1000.0, max_power: result[1]/1000.0, total_power: result[2]}
+	  result = redis.hmget("panel-#{site_ref}-totalPower", "avg_power", "max_power", "total_power")
+    #raise result.inspect
+    values = {avg_power: result[0].to_i/1000.0, max_power: result[1].to_i/1000.0, total_power: result[2]}
       #raise results.inspect
     #results.each do|result|
       #values = {avg_power: result['avg_power']/1000.0, max_power: result['max_power']/1000.0, total_power: result['total_power']}
       site_data_json = site_data_json.merge(values)
-      site_data_json[circuit.display.to_s] = values
+      #site_data_json[circuit.display.to_s] = values
     #end
       #end
     #end
@@ -126,16 +127,23 @@ class Ws::SitesController < ApplicationController
   def site_ref_check
   	if  params[:site_ref].nil?
       site_data_json = {"Error" => "Required Parameters: #{'site_ref' if params[:site_ref].nil?}"}
+      json_response(site_data_json)
     elsif params[:site_ref].empty?
       site_data_json = {"Error" => "Value Required for: #{'site_ref' if params[:site_ref].empty?}"}
+      json_response(site_data_json)
     else
     	if Site.find_by_site_ref(params[:site_ref]).nil?  
       	site_data_json = {"Error" => "Record not found with Site Reference #{params[:site_ref]}"}
+        json_response(site_data_json)
       end   
     end
+  end
+  
+
+  def json_response(site_data_json)
     respond_to do |format|
       format.json { render :json => site_data_json }
     end
   end
-  
+
 end
