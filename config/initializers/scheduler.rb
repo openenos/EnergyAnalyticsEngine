@@ -1,4 +1,4 @@
-
+=begin 
 require 'cassandra'
 
 s = Rufus::Scheduler.singleton
@@ -27,3 +27,5 @@ s.cron '0 1 * * *' do  # for every hour
   end
 
 end
+
+=end
