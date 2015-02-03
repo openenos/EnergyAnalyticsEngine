@@ -5,6 +5,26 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
+
+  namespace :ws, defaults: {format: 'json'} do
+    get '/getAllGroups' => 'site_groups#get_all_groups'
+    get '/getUsageByGroup' => 'site_groups#get_usage_by_group'
+    get '/getSiteByGroup' => 'site_groups#get_site_by_group'
+    get '/getDemandByGroup' => 'site_groups#get_demand_by_group'
+    get '/usageByGroup' => 'site_groups#usage_by_group'
+
+    get '/currentDemandByGroup' => "site_groups#current_demand_by_group"
+    get '/solarPowerByGroup' => "site_groups#solar_power_by_group"
+    get '/utilityPower' => "site_groups#utility_power"
+
+    get '/getLiveDataBySite' => "sites#get_live_data_by_site"
+    get '/solarDataBySite' => "sites#solar_data_by_site"
+    get '/getWeather' => "sites#get_weather"
+
+    get '/getCurrentDemandBySite' => "circuits#get_current_demand_by_site"
+    get '/getFivecLastMonth' => "circuits#get_fivec_last_month"
+  end
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
