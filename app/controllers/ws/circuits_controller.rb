@@ -52,6 +52,27 @@ class Ws::CircuitsController < ApplicationController
     end
   end
 
+  def prediction
+    db = cassandraDbConnection 
+    yest_start_time = Time.now.utc.yesterday.beginning_of_day.to_i
+    yest_end_time = (Time.now.utc - 1.day).to_i
+    yest_results =  db.execute("select * from emon_hourly_data where site_ref='#{params[:site_ref]}' and asof_hr >= '#{yest_start_time}' and as_of_day<'#{yest_end_time}'")
+    today_start_time = Time.now.utc.beginning_of_day.to_i
+    today_end_time = Time.now.utc.to_i
+    today_results =  db.execute("select * from emon_hourly_data where site_ref='#{params[:site_ref]}' and asof_hr >= '#{today_start_time}' and as_of_day<'#{today_end_time}'")
+    yest_value = 0
+    yest_results.each do |result|
+      yest_value += result 
+    end
+    today_value = 0
+    today_results.each do |result|
+      today_value += result 
+    end
+    yavg_value = yest_value/results.count
+    tavg_value = today_value/results.count
+    total_avg_value = yavg_value - tavg_value
+  end  
+  
   private
 
   def cassandraDbConnection
