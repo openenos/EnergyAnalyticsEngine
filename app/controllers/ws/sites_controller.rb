@@ -117,6 +117,82 @@ class Ws::SitesController < ApplicationController
     
   end
 
+  def get_all_channels_list_by_siteref
+           
+    site = Site.find_by_site_ref(site_ref)
+   
+    channels_list = {}
+    list_of_circuits = {}
+
+    site.panels.map(&:circuits).flatten.each do |circuit|
+      if circuit.input == 0 && circuit.active == 1
+        channels_list[circuit.elec_load_type.display.to_sym] ={}  unless channels_list.has_key?(circuit.elec_load_type.display.to_sym)
+      end   
+    end
+       
+    channels_list.each do |k,v|       
+    list_of_circuits = {}
+      ElecLoadType.find_by_dis(k).circuits.where(panel_id: site.id, input: 0, active: 1).each do|circuit|
+        list_of_circuits[circuit.id] = circuit.display  
+        channels_list[k] = list_of_circuits
+      end 
+    end
+
+    site_data_json = channels_list
+    respond_to do |format|
+      format.json { render :json => site_data_json }
+    end
+  end
+
+  def get_current_demand_by_site_channel
+    site_ref = params[:site_ref]
+    redis = Redis.new
+    begin
+      site = Site.find_by_site_ref(site_ref)
+      givenChannel = Circuit.find(params[:channel]).channel_no
+
+      #site_data_json = {site_name: site.dis}
+      site_data_json = {}
+
+      db = cassandraDbConnection
+      #channel_data = {}
+      channel_data = 0
+    
+      site.panels.map(&:circuits).flatten.each do |circuit|
+        if circuit.input == 0 && circuit.active == 1  && circuit.channel_no == givenChannel
+          results = redis.hget("panel-#{site_ref}-CH-#{givenChannel}", "avg_power")
+          channel_data = results
+        end
+      end
+
+      site_data_json[:usage_now] = channel_data
+
+      site.panels.each do |panel|
+        circuit = Circuit.where(panel_id: panel.id, channel_no: "#{givenChannel}").first
+      end
+
+      max_power = circuit.breaker_size * 120
+      
+      if circuit.double_breaker
+        max_power = max_power * 2
+      end  
+     
+      #site_data_json[:data] = Hash[channel_data.sort_by { |k,v| v }.reverse]
+      site_data_json[:max_power] = max_power
+      site_data_json[:breaker_capacity] = ((channel_data/max_power)*100)
+    
+    rescue Exception => e 
+    
+      site_data_json = {"Error" => e.message }
+    
+    end
+    respond_to do |format|
+      format.json { render :json => site_data_json }
+    end
+  end
+  
+
+
   private
 
   def cassandraDbConnection

@@ -12,7 +12,6 @@ Rails.application.routes.draw do
     get '/getSiteByGroup' => 'site_groups#get_site_by_group'
     get '/getDemandByGroup' => 'site_groups#get_demand_by_group'
     get '/usageByGroup' => 'site_groups#usage_by_group'
-
     get '/currentDemandByGroup' => "site_groups#current_demand_by_group"
     get '/solarPowerByGroup' => "site_groups#solar_power_by_group"
     get '/utilityPower' => "site_groups#utility_power"
@@ -20,9 +19,12 @@ Rails.application.routes.draw do
     get '/getLiveDataBySite' => "sites#get_live_data_by_site"
     get '/solarDataBySite' => "sites#solar_data_by_site"
     get '/getWeather' => "sites#get_weather"
+    get '/getAllChannelsListBySiteref' => "sites#get_all_channels_list_by_siteref"
+    get '/getCurrentDemandBySiteChannel' => "sites#get_current_demand_by_site_channel"
 
     get '/getCurrentDemandBySite' => "circuits#get_current_demand_by_site"
     get '/getFivecLastMonth' => "circuits#get_fivec_last_month"
+    get '/powerPrediction' => "circuits#power_prediction"
   end
 
   # Example of regular route:

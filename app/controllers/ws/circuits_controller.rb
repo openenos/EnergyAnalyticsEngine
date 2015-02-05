@@ -52,7 +52,7 @@ class Ws::CircuitsController < ApplicationController
     end
   end
 
-  def prediction
+  def power_prediction
     db = cassandraDbConnection 
     yest_start_time = Time.now.utc.yesterday.beginning_of_day.to_i
     yest_end_time = (Time.now.utc - 1.day).to_i
