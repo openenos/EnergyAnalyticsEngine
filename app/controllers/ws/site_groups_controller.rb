@@ -21,7 +21,7 @@ class Ws::SiteGroupsController < ApplicationController
     params[:group_id] ||= SiteGroup.first.id
     site_data_json[:group_id] = params[:group_id]
     site_data_json[:solar_sum] = sum_of_solar_avg_values
-    render :json =>  site_data_json
+    render :json => site_data_json
   end
 
   def utilityPower
@@ -108,8 +108,8 @@ class Ws::SiteGroupsController < ApplicationController
       site.panels.each do |panel|
         panel.circuits.where(display: "Main Power", active: 1).each do|circuit|
           #results = db.execute("select * from emon_live_data where panel='#{site.site_ref}' and channel='CH-#{circuit.channel_no}' ALLOW FILTERING")
+          result = redis.hget("panel-#{site.site_ref}-CH-#{circuit.channel_no}", "avg_power")
           #results.each do|result|
-          #demand_sum = demand_sum + result['avg_power'].to_i
           #end
           #result = redis.hget("panel-#{site.site_ref}-CH-#{circuit.channel_no}", "avg_power")
           demand_sum = demand_sum + result.to_i
@@ -128,7 +128,7 @@ class Ws::SiteGroupsController < ApplicationController
     sites = SiteGroup.find(group_id).sites
     sites.each do|site|
       results = db.execute("select * from min_by_power_produced where site_ref='#{site.site_ref}' and asof_min>=#{(Time.now-3.minute).to_i} limit 1")
-      results.each do|result|
+      results.each do |result|
         solar_sum = solar_sum + result['value'].to_i
       end
     end

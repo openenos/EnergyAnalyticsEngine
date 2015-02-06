@@ -53,7 +53,6 @@ before_action :site_ref_check
 
 	    givenChannel = Circuit.find(params[:channel]).channel_no
 
-	    db = cassandraDbConnection
 	    site_data_json = []   
 	    
 	    channel_data = {}
@@ -84,7 +83,7 @@ before_action :site_ref_check
   
   end
 
-	def dayDataBySiteAndChannel
+	def day_data_by_all_channels
 	  site_ref = params[:site_ref]	
 	  begin
 	    site = Site.find_by_site_ref(site_ref)
@@ -94,10 +93,7 @@ before_action :site_ref_check
 	    beginningDay = (Time.now - 24.hour).utc.to_i
 	    endingDay = Time.now.utc.to_i
 
-	    db = cassandraDbConnection
 	    site_data_json = {}
-	        
-
 	    channel_data = {}
 	    channel_name=""
 	    arr_keys = []
@@ -184,7 +180,6 @@ before_action :site_ref_check
 	    beginningDay = (given_date.to_datetime.beginning_of_month.to_time).utc.to_i
 	    endingDay = (given_date.to_datetime.end_of_month.to_time).utc.to_i
 	    
-	    db = cassandraDbConnection
 	    site_data_json = {site_name: site.display}    
 	    channel_data = {}
 	    arr_keys = []
@@ -212,9 +207,8 @@ before_action :site_ref_check
     respond_to do |format|
       format.json { render :json => site_data_json }
     end
-    
-  end	
 
+  end	
 
   private
 

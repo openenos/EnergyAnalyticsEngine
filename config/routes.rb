@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     get '/prevdayDataBySiteChannel' => "site_channels#prevday_data_by_site_channel"
     get '/weekDataBySiteChannel' => "site_channels#week_data_by_site_channel"
     get '/monthDataBySiteChannel' => "site_channels#month_data_by_site_channel"
+    get '/dayDataByAllChannels' => "site_channels#day_data_by_all_channels"
   end
 
   # Example of regular route:

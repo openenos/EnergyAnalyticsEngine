@@ -57,7 +57,6 @@ class Ws::SitesController < ApplicationController
     currentValue = 0 
     solr_count = 0
     results.each do|result|
-      #raise result['value'].inspect
       currentValue = result['value'] if solr_count == 0
       soFarTodayValue += result['value']
       solr_count += 1
