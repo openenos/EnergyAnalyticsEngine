@@ -151,11 +151,9 @@ class Ws::SitesController < ApplicationController
       site = Site.find_by_site_ref(site_ref)
       givenChannel = Circuit.find(params[:channel]).channel_no
 
-      #site_data_json = {site_name: site.dis}
       site_data_json = {}
 
       db = cassandraDbConnection
-      #channel_data = {}
       channel_data = 0
     
       site.panels.map(&:circuits).flatten.each do |circuit|
@@ -177,7 +175,6 @@ class Ws::SitesController < ApplicationController
         max_power = max_power * 2
       end  
      
-      #site_data_json[:data] = Hash[channel_data.sort_by { |k,v| v }.reverse]
       site_data_json[:max_power] = max_power
       site_data_json[:breaker_capacity] = ((channel_data/max_power)*100)
     

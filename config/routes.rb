@@ -25,6 +25,11 @@ Rails.application.routes.draw do
     get '/getCurrentDemandBySite' => "circuits#get_current_demand_by_site"
     get '/getFivecLastMonth' => "circuits#get_fivec_last_month"
     get '/powerPrediction' => "circuits#power_prediction"
+
+    get  '/dayDataBySiteChannel' => "site_channels#day_data_by_site_channel"
+    get '/prevdayDataBySiteChannel' => "site_channels#prevday_data_by_site_channel"
+    get '/weekDataBySiteChannel' => "site_channels#week_data_by_site_channel"
+    get '/monthDataBySiteChannel' => "site_channels#month_data_by_site_channel"
   end
 
   # Example of regular route:
